@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir Foto</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="upload-container">
+        <form>
+            <input type="file" name="photo" id="photo" required>
+            <input type="text" placeholder="Comentario" name="comment" id="comment" required>
+            <button type="button" onclick="uploadPhoto()">Subir Foto</button>
+        </form>
+        <div id="preview" class="photo-entry" style="display:none;">
+            <img src="" id="previewImage" alt="Previsualización de la imagen">
+            <div class="photo-info">
+                <p class="user">Usuario: ejemploUsuario</p>
+                <p class="timestamp">Justo ahora</p>
+                <p class="comment" id="previewComment"></p>
+            </div>
+        </div>
+    </div>
+</br><a href="feed.html">FEED</a></br>
+    <a href="subir.html">SUBIR</a><br/>
+    <a href="index.html">Index</a>
+    <script src="preview.js"></script>
+</body>
+</html>

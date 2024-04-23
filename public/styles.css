@@ -1,0 +1,82 @@
+/* Establece colores básicos */
+:root {
+    --blue-primary: #007bff;
+    --blue-dark: #0056b3;
+    --grey-light: #f8f9fa;
+    --grey-dark: #343a40;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--grey-light);
+    color: var(--grey-dark);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container, .feed-container, .upload-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 360px;
+    padding: 20px;
+    margin: 20px;
+}
+
+input[type="text"], input[type="password"], input[type="file"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-top: 10px;
+    border: 2px solid var(--blue-primary);
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--blue-primary);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: var(--blue-dark);
+}
+
+.photo-entry {
+    background-color: var(--grey-light);
+    border-radius: 8px;
+    margin-top: 20px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.photo-entry img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    max-width: 300px;
+}
+
+.photo-info {
+    text-align: left;
+    padding-top: 10px;
+}
+
+.user, .timestamp, .comment {
+    margin: 5px 0;
+}
+
+/* Añadir un poco de espacio al final del contenedor para mejor scrolling */
+.feed-container {
+    padding-bottom: 20px;
+}

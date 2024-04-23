@@ -1,0 +1,2 @@
+INSERT INTO usuarios (username, password, email, nombre, apellido, edad)
+VALUES ("admin", "admin", "admin", "admin", "admin", 21);
