@@ -26,8 +26,11 @@ connection.connect((err) => {
 // Middleware para analizar datos JSON
 app.use(bodyParser.json());
 
+// Middleware para servir archivos estáticos
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.js'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Ruta para manejar el inicio de sesión
