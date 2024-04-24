@@ -39,7 +39,7 @@ app.post('/login', async (req, res) => {
 
   try {
     // Consulta para buscar el usuario en la base de datos
-    const query = `SELECT * FROM Usuario WHERE username = '${username}' AND password = '${password}'`;
+    const query = `SELECT * FROM Usuario WHERE usuario = '${username}' AND contrasena = '${password}'`;
     connection.query(query, (err, result) => {
       if (err) {
         console.error('Error al buscar el usuario en la base de datos:', err);
