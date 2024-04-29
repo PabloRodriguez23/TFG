@@ -9,7 +9,7 @@
 <body>
     <!-- Menú de navegación -->
     <div class="navbar">
-        <a href="index.html">Inicio</a>
+        <a href="index.html">Cerrar Sesión</a>
         <a href="subir.html">Subir Fotos</a>
     </div>
     <div class="feed-container">
@@ -19,6 +19,14 @@
         </div>
         <!-- Las fotos cargadas dinámicamente aparecerán aquí -->
     </div>
+
+    <!-- Contenedor Modal para la imagen ampliada -->
+    <div id="imageModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="img01">
+        <div id="caption"></div>
+    </div>
+
     <script src="feed.js"></script> <!-- Asegúrate de que la ruta al script sea correcta -->
 </body>
 </html>

@@ -1,7 +1,7 @@
 /* Establece colores básicos */
 :root {
-    --blue-primary: #007bff;
-    --blue-dark: #0056b3;
+    --teal-primary: #20c997;  /* Azul verdoso */
+    --teal-dark: #198754;  /* Un tono más oscuro para hover */
     --grey-light: #f8f9fa;
     --grey-dark: #343a40;
 }
@@ -13,27 +13,43 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
-    flex-direction: column; /* Establece la dirección de los elementos flexibles en columna */
-    align-items: center; /* Centra horizontalmente el contenido */
-    min-height: 100vh; /* Asegura que el cuerpo tenga al menos el 100% del alto de la ventana */
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
 }
+
 
 .login-container, .feed-container, .upload-container {
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 360px;
+    width: 90%;  /* Ajusta el ancho por defecto para ser más responsive */
+    max-width: 600px; /* Aumenta el max-width para permitir un contenedor más ancho */
     padding: 20px;
-    margin: 20px;
-    
+    margin: 20px auto; /* Centra el contenedor horizontalmente */
 }
+
+/* Para pantallas medianas donde podemos permitir un poco más de ancho */
+@media (min-width: 601px) and (max-width: 900px) {
+    .login-container, .feed-container, .upload-container {
+        max-width: 80%; /* Permite que el contenedor sea un poco más ancho */
+    }
+}
+
+/* Para pantallas grandes */
+@media (min-width: 901px) {
+    .login-container, .feed-container, .upload-container {
+        max-width: 800px; /* Ajusta este valor según lo que consideres adecuado */
+    }
+}
+
+
 
 input[type="text"], input[type="password"], input[type="file"] {
     width: calc(100% - 20px);
     padding: 10px;
     margin-top: 10px;
-    border: 2px solid var(--blue-primary);
+    border: 2px solid var(--teal-primary);
     border-radius: 4px;
     box-sizing: border-box;
 }
@@ -41,7 +57,7 @@ input[type="text"], input[type="password"], input[type="file"] {
 button {
     width: 100%;
     padding: 10px;
-    background-color: var(--blue-primary);
+    background-color: var(--teal-primary);
     color: white;
     border: none;
     border-radius: 4px;
@@ -50,59 +66,131 @@ button {
 }
 
 button:hover {
-    background-color: var(--blue-dark);
+    background-color: var(--teal-dark);
 }
 
 .photo-entry {
+    display: flex;
+    flex-direction: row; /* Orientación horizontal por defecto */
+    align-items: center; /* Alinea verticalmente los items en el centro */
     background-color: var(--grey-light);
     border-radius: 8px;
     margin-top: 20px;
     padding: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Asegura que todo el contenido se mantenga dentro del borde redondeado */
 }
 
 .photo-entry img {
     width: 100%;
+    max-width: 300px; /* Ajusta esto según el tamaño deseado de la imagen */
     height: auto;
-    border-radius: 4px;
-    max-width: 300px;
+    margin-right: 20px; /* Espacio entre la imagen y el texto */
 }
 
 .photo-info {
+    flex: 1; /* Toma el espacio restante */
     text-align: left;
-    padding-top: 10px;
 }
+
+/* Media query para pantallas pequeñas */
+@media (max-width: 600px) {
+    .photo-entry {
+        flex-direction: column; /* Cambia la orientación a vertical */
+    }
+
+    .photo-entry img {
+        margin-right: 0; /* Elimina el margen derecho ya que no es necesario */
+        max-width: 100%; /* Permite que la imagen ocupe todo el ancho disponible */
+    }
+
+    .photo-info {
+        text-align: center; /* Centra el texto para una mejor apariencia en dispositivos móviles */
+        padding-top: 10px; /* Añade un poco de espacio arriba del texto */
+    }
+}
+
+/* Estilo para el fondo del modal */
+.modal {
+    display: none; /* Oculto por defecto */
+    position: fixed; /* Fijo en toda la pantalla */
+    z-index: 2; /* Asegura que esté sobre otros contenidos */
+    left: 0;
+    top: 0;
+    width: 100%; /* Ancho completo */
+    height: 100%; /* Alto completo */
+    overflow: auto; /* Permite scroll si es necesario */
+    background-color: rgba(0,0,0,0.8); /* Oscurece el fondo */
+}
+
+/* Estilo para la imagen dentro del modal */
+.modal-content {
+    margin: auto;
+    display: block;
+    max-width: 80%; /* Máximo ancho que la imagen puede tener */
+    max-height: 80vh; /* Máximo alto que la imagen puede tener */
+    object-fit: contain; /* Asegura que la imagen mantenga su aspecto sin recortar */
+}
+
+/* Estilo para el texto debajo de la imagen */
+#caption {
+    color: #ccc;
+    text-align: center;
+    font-size: 18px;
+    padding: 10px;
+}
+
+/* Estilo para el botón de cerrar */
+.close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: #bbb;
+    text-decoration: none;
+}
+
 
 .user, .timestamp, .comment {
     margin: 5px 0;
 }
 
-/* Añadir un poco de espacio al final del contenedor para mejor scrolling */
 .feed-container {
     padding-bottom: 20px;
 }
 
 /* Estilos para el menú de navegación */
 .navbar {
-    position: fixed; /* Fija el menú en la parte superior */
-    top: 0; /* Lo coloca en la parte superior */
-    width: 100%; /* Ocupa todo el ancho de la pantalla */
-    background-color: #333;
-    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--teal-primary); /* Cambio de color */
+    display: flex; /* Uso de Flexbox para centrar los elementos */
+    justify-content: center; /* Centra los elementos horizontalmente */
+    align-items: center; /* Centra los elementos verticalmente */
+    padding: 14px 16px; /* Añade un poco de padding */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Opcional: añade sombra para un efecto elevado */
 }
 
 .navbar a {
-    float: left;
     display: block;
     color: #f2f2f2;
     text-align: center;
-    padding: 14px 16px;
+    padding: 10px 15px; /* Ajusta el padding según necesites */
     text-decoration: none;
     font-size: 17px;
+    transition: background-color 0.3s; /* Transición suave para el hover */
 }
 
 .navbar a:hover {
     background-color: #ddd;
     color: black;
 }
-
