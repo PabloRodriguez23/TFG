@@ -16,13 +16,20 @@ const uploadDir = './uploads';
 fs.mkdirSync(uploadDir, { recursive: true });
 
 const corsOptions = {
-  origin: 'http://localhost:3000', // Ajusta según sea necesario
+  origin: function (origin, callback) {
+      if (!origin || /localhost|mi-dominio.com|192.168.x.x/.test(origin)) {
+          callback(null, true)
+      } else {
+          callback(new Error('CORS not allowed from this origin'));
+      }
+  },
   credentials: true,
   optionsSuccessStatus: 200
 };
 
-// Configuración de CORS
-app.use(cors(corsOptions));
+//app.use(cors(corsOptions));
+app.use(cors());
+
 
 // Configuración de la conexión a MySQL
 const connection = mysql.createConnection({
@@ -147,6 +154,6 @@ app.get('/photos', (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor en funcionamiento en http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Servidor accesible en la red local mediante la ip 192.168.0.23:${PORT} o mi-dominio.com`);
 });
