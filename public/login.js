@@ -15,13 +15,13 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify({ username, password })
         })
-        .then(response => {
-            if (response.ok) {
-                // Si las credenciales son válidas, redirigir a la página de feed
-                window.location.href = 'feed.html';
+        .then(response => response.json())
+        .then(data => {
+            if (data.username) {
+                localStorage.setItem('username', data.username); // Guardar el nombre de usuario en el almacenamiento local
+                window.location.href = 'feed.html'; // Redirigir a la página de feed
             } else {
-                // Si las credenciales no son válidas, mostrar un mensaje de error
-                throw new Error('Usuario o contraseña incorrectos');
+                throw new Error(data.message || 'Usuario o contraseña incorrectos');
             }
         })
         .catch(error => {

@@ -12,19 +12,21 @@
             <input type="file" name="photo" id="photo" required>
             <input type="text" placeholder="Comentario" name="comment" id="comment" required>
             <button type="button" onclick="uploadPhoto()">Subir Foto</button>
+            <button onclick="window.history.back()">Volver atrás</button>
         </form>
         <div id="preview" class="photo-entry" style="display:none;">
             <img src="" id="previewImage" alt="Previsualización de la imagen">
             <div class="photo-info">
-                <p class="user">Usuario: ejemploUsuario</p>
+                <p id="previewUser" class="user"></p>  <!-- Elemento para mostrar el nombre de usuario -->
                 <p class="timestamp">Justo ahora</p>
                 <p class="comment" id="previewComment"></p>
             </div>
         </div>
     </div>
+    
 </br><a href="feed.html">FEED</a></br>
     <a href="subir.html">SUBIR</a><br/>
     <a href="index.html">Index</a>
-    <script src="preview.js"></script>
+    <script src="subir.js"></script>
 </body>
 </html>
