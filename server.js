@@ -136,13 +136,13 @@ app.get('/photos', (req, res) => {
       }
       
       const photos = results.map(photo => {
-          return {
-              imageUrl: `/uploads/${photo.filepath}`, // Asegúrate de que esto corresponde al nombre de archivo almacenado
-              username: photo.username,
-              timestamp: photo.created_at, // Usar el campo de timestamp para la fecha
-              comment: photo.comment
-          };
-      });
+        return {
+            imageUrl: `/${photo.filepath.replace(/\\/g, '/')}`, // Reemplaza las barras invertidas con barras normales
+            username: photo.username,
+            timestamp: photo.created_at,
+            comment: photo.comment
+        };
+    });
       res.json(photos);
   });
 });
