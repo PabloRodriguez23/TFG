@@ -52,6 +52,7 @@ input[type="text"], input[type="password"], input[type="file"] {
     border: 2px solid var(--teal-primary);
     border-radius: 4px;
     box-sizing: border-box;
+    margin-bottom: 10px;  /* Espacio inferior después de cada entrada */
 }
 
 button {
@@ -63,6 +64,7 @@ button {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
+    margin-top: 10px;  /* Espacio superior para separar los botones */
 }
 
 button:hover {
