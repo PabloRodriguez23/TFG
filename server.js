@@ -190,6 +190,7 @@ app.get('/user-photos', requireLogin, (req, res) => {
             return res.status(500).json({ message: 'Error fetching photos' });
         }
         const photos = results.map(photo => ({
+            id: photo.id,
             imageUrl: `/${photo.filepath.replace(/\\/g, '/')}`,
             username: photo.username,
             timestamp: photo.created_at,
@@ -198,6 +199,56 @@ app.get('/user-photos', requireLogin, (req, res) => {
         res.json(photos);
     });
 });
+
+// Ruta para actualizar una foto
+app.put('/update-photo/:photoId', requireLogin, (req, res) => {
+    const { photoId } = req.params;
+    const { comment } = req.body;
+    const username = req.session.username;  // Asegurar que solo el dueño puede editar
+
+    const updateQuery = 'UPDATE Fotos SET comment = ? WHERE id = ? AND username = ?';
+    connection.query(updateQuery, [comment, photoId, username], (err, result) => {
+        if (err) {
+            console.error('Error updating photo:', err);
+            return res.status(500).send({ message: 'Error updating photo' });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).send({ message: 'Photo not found or permission denied' });
+        }
+        res.send({ message: 'Photo updated successfully' });
+    });
+});
+
+// Ruta para eliminar una foto
+app.delete('/delete-photo/:photoId', requireLogin, (req, res) => {
+    const { photoId } = req.params; // Extraer el ID de la foto de los parámetros de la ruta
+    const username = req.session.username;  // Esto asume que el username está almacenado en la sesión
+
+    // Verificar que el ID de la foto es un número válido
+    if (!photoId || isNaN(photoId)) {
+        return res.status(400).send({ message: 'Invalid photo ID' });
+    }
+
+    const deleteQuery = 'DELETE FROM Fotos WHERE id = ? AND username = ?';
+
+    // Ejecutar la consulta para eliminar la foto
+    connection.query(deleteQuery, [parseInt(photoId), username], (err, result) => {
+        if (err) {
+            console.error('Error deleting photo:', err);
+            return res.status(500).send({ message: 'Error deleting photo' });
+        }
+
+        // Verificar si se eliminó alguna fila
+        if (result.affectedRows === 0) {
+            return res.status(404).send({ message: 'Photo not found or permission denied' });
+        }
+
+        // Enviar respuesta de éxito
+        res.send({ message: 'Photo deleted successfully' });
+    });
+});
+
+
 
 
 app.listen(PORT, '0.0.0.0', () => {
