@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Usuario</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Menú de navegación -->
+    <div class="navbar">
+        <a href="index.html">Cerrar Sesión</a>
+        <a href="subir.html">Subir Fotos</a>
+        <a href="feed.html">Feed</a>
+    </div>
+
+    <!-- Contenedor de perfil -->
+    <div class="profile-container">
+        <h1 id="username">Nombre de Usuario</h1>
+        <!-- Información adicional del usuario si es necesario -->
+        <div id="user-info">
+            <p>Email: <span id="user-email"></span></p>
+            <!-- Más información del usuario aquí -->
+        </div>
+        <h2>Fotos Subidas</h2>
+        <div class="photos-container">
+            <!-- Las fotos se cargarán aquí dinámicamente -->
+        </div>
+    </div>
+
+    <script src="perfil.js"></script>
+</body>
+</html>

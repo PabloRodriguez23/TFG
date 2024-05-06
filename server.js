@@ -154,6 +154,52 @@ app.get('/photos', (req, res) => {
   });
 });
 
+app.get('/user-data', requireLogin, (req, res) => {
+    const usuario = req.query.username;  // Asegúrate de que el nombre del parámetro coincida con cómo lo envías desde el cliente.
+    if (!usuario) {
+        return res.status(400).json({ message: 'No username provided' });
+    }
+
+    const query = 'SELECT usuario, email FROM Usuario WHERE usuario = ?'; // Asegúrate de que 'usuario' es el nombre correcto de la columna.
+    connection.query(query, [usuario], (err, results) => {
+        if (err) {
+            console.error('Error fetching user data:', err);
+            return res.status(500).json({ message: 'Error fetching user data' });
+        }
+        if (results.length > 0) {
+            res.json(results[0]);
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    });
+});
+
+
+
+// Ruta para obtener las fotos de un usuario específico
+app.get('/user-photos', requireLogin, (req, res) => {
+    const username = req.query.username;
+    if (!username) {
+        return res.status(400).json({ message: 'No username provided' });
+    }
+
+    const query = 'SELECT * FROM Fotos WHERE username = ? ORDER BY created_at DESC';
+    connection.query(query, [username], (err, results) => {
+        if (err) {
+            console.error('Error fetching photos:', err);
+            return res.status(500).json({ message: 'Error fetching photos' });
+        }
+        const photos = results.map(photo => ({
+            imageUrl: `/${photo.filepath.replace(/\\/g, '/')}`,
+            username: photo.username,
+            timestamp: photo.created_at,
+            comment: photo.comment
+        }));
+        res.json(photos);
+    });
+});
+
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor accesible en la red local mediante la ip 192.168.0.23:${PORT} o mi-dominio.com`);
 });
