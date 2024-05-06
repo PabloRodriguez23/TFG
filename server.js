@@ -221,34 +221,48 @@ app.put('/update-photo/:photoId', requireLogin, (req, res) => {
 
 // Ruta para eliminar una foto
 app.delete('/delete-photo/:photoId', requireLogin, (req, res) => {
-    const { photoId } = req.params; // Extraer el ID de la foto de los parámetros de la ruta
-    const username = req.session.username;  // Esto asume que el username está almacenado en la sesión
+    const photoId = req.params.photoId; // Extraer el ID de la foto de los parámetros de la ruta
+    const username = req.session.username; // Esto asume que el username está almacenado en la sesión
 
-    // Verificar que el ID de la foto es un número válido
-    if (!photoId || isNaN(photoId)) {
-        return res.status(400).send({ message: 'Invalid photo ID' });
+    if (!photoId) {
+        return res.status(400).send({ message: 'Photo ID is required' });
     }
 
-    const deleteQuery = 'DELETE FROM Fotos WHERE id = ? AND username = ?';
-
-    // Ejecutar la consulta para eliminar la foto
-    connection.query(deleteQuery, [parseInt(photoId), username], (err, result) => {
+    // Primero, busca la información de la foto para obtener la ruta del archivo
+    const query = 'SELECT filepath FROM Fotos WHERE id = ? AND username = ?';
+    connection.query(query, [photoId, username], (err, results) => {
         if (err) {
-            console.error('Error deleting photo:', err);
-            return res.status(500).send({ message: 'Error deleting photo' });
+            console.error('Error fetching photo:', err);
+            return res.status(500).send({ message: 'Error fetching photo data' });
+        }
+        if (results.length === 0) {
+            return res.status(404).send({ message: 'Photo not found' });
         }
 
-        // Verificar si se eliminó alguna fila
-        if (result.affectedRows === 0) {
-            return res.status(404).send({ message: 'Photo not found or permission denied' });
-        }
+        const filepath = results[0].filepath;
 
-        // Enviar respuesta de éxito
-        res.send({ message: 'Photo deleted successfully' });
+        // Ahora elimina el archivo
+        fs.unlink(path.join(__dirname, filepath), (err) => {
+            if (err) {
+                console.error('Error deleting file:', err);
+                return res.status(500).send({ message: 'Failed to delete image file' });
+            }
+
+            // Si el archivo se eliminó correctamente, elimina la entrada de la base de datos
+            const deleteQuery = 'DELETE FROM Fotos WHERE id = ? AND username = ?';
+            connection.query(deleteQuery, [photoId, username], (err, result) => {
+                if (err) {
+                    console.error('Error deleting photo:', err);
+                    return res.status(500).send({ message: 'Error deleting photo' });
+                }
+                if (result.affectedRows === 0) {
+                    return res.status(404).send({ message: 'Photo not found or permission denied' });
+                }
+                res.send({ message: 'Photo deleted successfully' });
+            });
+        });
     });
 });
-
-
 
 
 app.listen(PORT, '0.0.0.0', () => {

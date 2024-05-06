@@ -20,3 +20,12 @@ INSERT INTO Usuario (usuario, nombre, apellidos, email, edad, contrasena) VALUES
 ('raquel56', 'Raquel', 'López', 'raquel56@example.com', 38, 'contrasena8'),
 ('luis68', 'Luis', 'García', 'luis68@example.com', 31, 'contrasena9'),
 ('carmen74', 'Carmen', 'Martínez', 'carmen74@example.com', 36, 'contrasena10');
+
+CREATE TABLE Fotos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    comment TEXT,
+    filepath VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (username) REFERENCES Usuario(username)
+);
