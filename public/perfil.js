@@ -72,9 +72,8 @@ function setupModalCloseEvent() {
 
 function editPhoto(photoId) {
     console.log("Editing photo with ID:", photoId);
-    // Suponiendo que tienes un modal de edición ya definido en tu HTML
     const editModal = document.getElementById('editModal');
-    const editComment = document.getElementById('editComment'); // Input para comentario en tu modal
+    const editComment = document.getElementById('editComment'); // Input para comentario
     const photoEntry = document.querySelector(`#photo-${photoId} .comment`).textContent;
 
     // Prellenar el campo de comentario con el comentario actual

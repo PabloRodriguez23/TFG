@@ -29,9 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(data => {
-            // Aquí puedes manejar la respuesta del servidor después de crear el usuario
             console.log('Usuario creado exitosamente:', data);
-            // Por ejemplo, podrías redirigir al usuario a otra página
             window.location.href = '/index.html';
         })
         .catch(error => {
