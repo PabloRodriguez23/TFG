@@ -133,6 +133,38 @@ app.post('/upload', requireLogin, upload.single('photo'), (req, res) => {
   });
 });
 
+app.post('/crearusuario', async (req, res) => {
+    const { username, password, nombre, apellidos, email, edad } = req.body;
+  
+    // Verificar si el nombre de usuario ya existe en la base de datos
+    const userQuery = `SELECT * FROM Usuario WHERE usuario = ?`;
+    connection.query(userQuery, [username], (err, result) => {
+        if (err) {
+            console.error('Error al buscar el usuario en la base de datos:', err);
+            res.status(500).json({ message: 'Error del servidor' });
+            return;
+        }
+  
+        if (result.length > 0) {
+            // Si el nombre de usuario ya existe, enviar un mensaje de error al cliente
+            res.status(409).json({ message: 'El nombre de usuario ya está en uso' });
+            return;
+        }
+  
+        // Si el nombre de usuario no está en uso, insertar el nuevo usuario en la base de datos
+        const insertQuery = `INSERT INTO Usuario (usuario, contrasena, nombre, apellidos, email, edad) VALUES (?, ?, ?, ?, ?, ?)`;
+        connection.query(insertQuery, [username, password, nombre, apellidos, email, edad], (err, result) => {
+            if (err) {
+                console.error('Error al insertar el nuevo usuario en la base de datos:', err);
+                res.status(500).json({ message: 'Error del servidor' });
+                return;
+            }
+            // Si se inserta correctamente, enviar una respuesta de éxito al cliente
+            res.status(201).json({ message: 'Usuario creado exitosamente' });
+        });
+    });
+  });
+
 
 app.get('/photos', (req, res) => {
   const query = 'SELECT * FROM fotos ORDER BY created_at DESC';
