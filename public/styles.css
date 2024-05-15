@@ -18,8 +18,7 @@ body {
     min-height: 100vh;
 }
 
-
-.login-container, .feed-container, .upload-container {
+.login-container, .feed-container, .upload-container, .profile-container, .search-container {
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -31,19 +30,17 @@ body {
 
 /* Para pantallas medianas donde podemos permitir un poco más de ancho */
 @media (min-width: 601px) and (max-width: 900px) {
-    .login-container, .feed-container, .upload-container {
+    .login-container, .feed-container, .upload-container, .profile-container, .search-container {
         max-width: 80%; /* Permite que el contenedor sea un poco más ancho */
     }
 }
 
 /* Para pantallas grandes */
 @media (min-width: 901px) {
-    .login-container, .feed-container, .upload-container {
+    .login-container, .feed-container, .upload-container, .profile-container, .search-container {
         max-width: 800px; /* Ajusta este valor según lo que consideres adecuado */
     }
 }
-
-
 
 input[type="text"], input[type="password"], input[type="file"] {
     width: calc(100% - 20px);
@@ -52,7 +49,6 @@ input[type="text"], input[type="password"], input[type="file"] {
     border: 2px solid var(--teal-primary);
     border-radius: 4px;
     box-sizing: border-box;
-    margin-bottom: 10px;  /* Espacio inferior después de cada entrada */
 }
 
 button {
@@ -64,7 +60,7 @@ button {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin-top: 10px;  /* Espacio superior para separar los botones */
+    margin-top: 10px; /* Añade un poco de espacio entre los botones */
 }
 
 button:hover {
@@ -159,7 +155,6 @@ button:hover {
     text-decoration: none;
 }
 
-
 .user, .timestamp, .comment {
     margin: 5px 0;
 }
@@ -218,4 +213,17 @@ button:hover {
 #user-info p {
     font-size: 16px;
     color: var(--grey-dark);
+}
+
+.user-entry {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid var(--teal-primary);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.user-entry:hover {
+    background-color: var(--teal-light);
 }

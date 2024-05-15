@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Usuario</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Menú de navegación -->
+    <div class="navbar">
+        <a href="index.html">Cerrar Sesión</a>
+        <a href="subir.html">Subir Fotos</a>
+        <a href="feed.html">Feed</a>
+        <a href="buscar.html">Buscar</a>
+    </div>
+
+    <!-- Contenedor de perfil -->
+    <div class="profile-container">
+        <h1 id="username">Nombre de Usuario</h1>
+        <div id="user-info">
+            <p>Email: <span id="user-email"></span></p>
+        </div>
+        <h2>Fotos Subidas</h2>
+        <div class="photos-container">
+            <!-- Las fotos se cargarán aquí dinámicamente -->
+        </div>
+    </div>
+
+    <!-- Mueve el script al final del body para asegurar que el DOM esté cargado -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const params = new URLSearchParams(window.location.search);
+        const userId = params.get('id');
+        console.log('User ID from URL:', userId);
+
+        if (!userId) {
+            alert('User ID is missing in the URL');
+            window.location.href = 'buscar.html';
+            return;
+        }
+
+        fetch(`/perfil-usuario/${userId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert(data.message);
+                    window.location.href = 'buscar.html';
+                    return;
+                }
+                console.log('User profile data:', data);
+                document.getElementById('username').textContent = `${data.nombre} ${data.apellidos} (${data.usuario})`;
+                document.getElementById('user-email').textContent = data.email;
+
+                return fetch(`/fotos-usuario/${userId}`);
+            })
+            .then(response => response.json())
+            .then(photos => {
+                console.log('User photos data:', photos);
+                const photosContainer = document.querySelector('.photos-container');
+                photosContainer.innerHTML = '';
+
+                if (photos.length > 0) {
+                    photos.forEach(photo => {
+                        const photoDiv = document.createElement('div');
+                        photoDiv.className = 'photo-entry';
+                        photoDiv.innerHTML = `
+                            <img src="${photo.imageUrl}" alt="Foto subida por el usuario">
+                            <div class="photo-info">
+                                <p class="comment">${photo.comment}</p>
+                                <p class="timestamp">${new Date(photo.timestamp).toLocaleString()}</p>
+                            </div>
+                        `;
+                        photosContainer.appendChild(photoDiv);
+                    });
+                } else {
+                    photosContainer.innerHTML = '<p>No se encontraron fotos</p>';
+                }
+            })
+            .catch(error => console.error('Error fetching user profile or photos:', error));
+    });
+    </script>
+</body>
+</html>

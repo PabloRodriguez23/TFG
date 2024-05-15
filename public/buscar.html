@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Usuarios</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Menú de navegación -->
+    <div class="navbar">
+        <a href="index.html">Cerrar Sesión</a>
+        <a href="subir.html">Subir Fotos</a>
+        <a href="feed.html">Feed</a>
+        <a href="perfil.html">Perfil</a>
+        <a href="buscar.html">Buscar</a>
+    </div>
+    <div class="container">
+        <div class="search-container">
+            <h1>Buscar Usuarios</h1>
+            <input type="text" id="searchInput" placeholder="Buscar usuarios...">
+            <button id="searchButton">Buscar</button>
+            <div id="searchResults"></div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('searchButton').addEventListener('click', function() {
+            const query = document.getElementById('searchInput').value;
+            fetch(`/buscar-usuarios?q=${query}`)
+                .then(response => response.json())
+                .then(users => {
+                    const resultsContainer = document.getElementById('searchResults');
+                    resultsContainer.innerHTML = ''; // Limpiar resultados anteriores
+                    if (users.length > 0) {
+                        users.forEach(user => {
+                            const userDiv = document.createElement('div');
+                            userDiv.className = 'user-entry';
+                            userDiv.innerHTML = `
+                                <button onclick="viewProfile(${user.id})">${user.nombre} ${user.apellidos} (${user.usuario})</button>
+                            `;
+                            resultsContainer.appendChild(userDiv);
+                        });
+                    } else {
+                        resultsContainer.innerHTML = '<p>No se encontraron usuarios</p>';
+                    }
+                })
+                .catch(error => console.error('Error buscando usuarios:', error));
+        });
+
+        function viewProfile(userId) {
+            window.location.href = `perfil-usuario.html?id=${userId}`;
+        }
+    </script>
+</body>
+</html>

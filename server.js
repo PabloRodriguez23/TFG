@@ -27,7 +27,6 @@ const corsOptions = {
   optionsSuccessStatus: 200
 };
 
-//app.use(cors(corsOptions));
 app.use(cors());
 
 
@@ -113,7 +112,6 @@ function requireLogin(req, res, next) {
   next();
 }
 
-
 app.post('/upload', requireLogin, upload.single('photo'), (req, res) => {
   const file = req.file;
   const comment = req.body.comment;
@@ -165,7 +163,6 @@ app.post('/crearusuario', async (req, res) => {
     });
   });
 
-
 app.get('/photos', (req, res) => {
   const query = 'SELECT * FROM fotos ORDER BY created_at DESC';
   connection.query(query, (err, results) => {
@@ -187,31 +184,37 @@ app.get('/photos', (req, res) => {
 });
 
 app.get('/user-data', requireLogin, (req, res) => {
-    const usuario = req.query.username;  // Asegúrate de que el nombre del parámetro coincida con cómo lo envías desde el cliente.
+    const usuario = req.query.username;
+    console.log('Fetching user data for username:', usuario); // Log para verificar el nombre de usuario
+
     if (!usuario) {
+        console.log('No username provided');
         return res.status(400).json({ message: 'No username provided' });
     }
 
-    const query = 'SELECT usuario, email FROM Usuario WHERE usuario = ?'; // Asegúrate de que 'usuario' es el nombre correcto de la columna.
+    const query = 'SELECT usuario, email FROM Usuario WHERE usuario = ?';
     connection.query(query, [usuario], (err, results) => {
         if (err) {
             console.error('Error fetching user data:', err);
             return res.status(500).json({ message: 'Error fetching user data' });
         }
         if (results.length > 0) {
+            console.log('User data fetched:', results[0]);
             res.json(results[0]);
         } else {
+            console.log('User not found');
             res.status(404).json({ message: 'User not found' });
         }
     });
 });
 
 
-
-// Ruta para obtener las fotos de un usuario específico
 app.get('/user-photos', requireLogin, (req, res) => {
     const username = req.query.username;
+    console.log('Fetching photos for username:', username); // Log para verificar el nombre de usuario
+
     if (!username) {
+        console.log('No username provided');
         return res.status(400).json({ message: 'No username provided' });
     }
 
@@ -221,6 +224,7 @@ app.get('/user-photos', requireLogin, (req, res) => {
             console.error('Error fetching photos:', err);
             return res.status(500).json({ message: 'Error fetching photos' });
         }
+        console.log('Photos fetched:', results);
         const photos = results.map(photo => ({
             id: photo.id,
             imageUrl: `/${photo.filepath.replace(/\\/g, '/')}`,
@@ -295,6 +299,76 @@ app.delete('/delete-photo/:photoId', requireLogin, (req, res) => {
         });
     });
 });
+
+// Ruta para buscar usuarios por nombre de usuario
+app.get('/buscar-usuarios', (req, res) => {
+    const searchQuery = req.query.q;
+    const query = 'SELECT id, usuario, nombre, apellidos FROM Usuario WHERE usuario LIKE ?';
+    connection.query(query, [`%${searchQuery}%`], (err, results) => {
+        if (err) {
+            console.error('Error searching for users:', err);
+            return res.status(500).json({ message: 'Error searching for users' });
+        }
+        res.json(results);
+    });
+});
+
+// Ruta para obtener los datos de un usuario específico por su ID
+app.get('/perfil-usuario/:userId', (req, res) => {
+    const userId = req.params.userId;
+    const query = 'SELECT id, usuario, nombre, apellidos, email FROM Usuario WHERE id = ?';
+    connection.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error('Error fetching user profile:', err);
+            return res.status(500).json({ message: 'Error fetching user profile' });
+        }
+        if (results.length > 0) {
+            res.json(results[0]);
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    });
+});
+
+// Ruta para obtener las fotos de un usuario específico por su ID
+app.get('/fotos-usuario/:userId', (req, res) => {
+    const userId = req.params.userId;
+    console.log('Fetching photos for user ID:', userId);
+
+    // Primero, obtenemos el nombre de usuario a partir del ID del usuario
+    const getUserQuery = 'SELECT usuario FROM Usuario WHERE id = ?';
+    connection.query(getUserQuery, [userId], (err, userResults) => {
+        if (err) {
+            console.error('Error fetching user:', err);
+            return res.status(500).send({ message: 'Error fetching user' });
+        }
+        if (userResults.length === 0) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+
+        const username = userResults[0].usuario;
+
+        // Ahora obtenemos las fotos usando el nombre de usuario
+        const query = 'SELECT * FROM Fotos WHERE username = ? ORDER BY created_at DESC';
+        connection.query(query, [username], (err, results) => {
+            if (err) {
+                console.error('Error fetching user photos:', err);
+                return res.status(500).send({ message: 'Error fetching user photos' });
+            }
+            const photos = results.map(photo => {
+                return {
+                    id: photo.id,
+                    imageUrl: `/${photo.filepath.replace(/\\/g, '/')}`,
+                    username: photo.username,
+                    timestamp: photo.created_at,
+                    comment: photo.comment
+                };
+            });
+            res.json(photos);
+        });
+    });
+});
+
 
 
 app.listen(PORT, '0.0.0.0', () => {
